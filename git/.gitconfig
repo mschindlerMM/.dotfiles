@@ -1,0 +1,14 @@
+[core]
+	excludesfile = ~/.gitignore
+	editor = vim
+[alias]
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+[user]
+	name = Martin Schindler
+	email = martin.schindler@getmercury.io
+[credential "https://gitlab.i.onmercury.io"]
+	helper = 
+	helper = !/usr/bin/glab auth git-credential
