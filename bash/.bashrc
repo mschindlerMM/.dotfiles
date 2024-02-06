@@ -11,9 +11,6 @@ if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]; then
 fi
 export PATH
 
-# Uncomment the following line if you don't like systemctl's auto-paging feature:
-# export SYSTEMD_PAGER=
-
 # User specific aliases and functions
 if [ -d ~/.bashrc.d ]; then
   for rc in ~/.bashrc.d/*; do
@@ -26,70 +23,21 @@ fi
 # User specific environment and startup programs
 HOST_NAME=mschindler
 
-# Install NVM
 source ~/.nvm/nvm.sh
-
-if ! command -v nvm >/dev/null; then
-    echo "===> NVM is missing. Installing..."
-    PROFILE=/dev/null bash -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash"
-    source ~/.nvm/nvm.sh
-fi
-
-if [ "$(nvm current)" == "none" ]; then
-  echo "===> no version installed. installing version 18..."
-  nvm install 18
-  nvm alias default 18
-fi
-
 nvm use default
+
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
 
-# Init brew
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" >/dev/null
-
-# Install brew
-if ! command -v brew >/dev/null; then
-  echo "===> Missing brew. Installing..."
-  bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-  (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> ~/.bashrc
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-
-  sudo yum groupinstall 'Development Tools'
-  brew install gcc
-fi
-
-# thefuck
-if ! command -v thefuck >/dev/null; then
-  echo "===> Missing thefuck"
-  brew install thefuck
-fi
 eval "$(thefuck --alias)"
 
-# vcprompt
-if ! command -v vcprompt >/dev/null; then
-  echo "===> installing vcprompt..."
-  brew install vcprompt
-fi
-
-# asdf
-if ! command -v asdf >/dev/null; then
-  echo "===> installing asdf..."
-  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
-fi
 . "$HOME/.asdf/asdf.sh"
 . "$HOME/.asdf/completions/asdf.bash"
 
-# rvm
-if ! command -v rvm >/dev/null; then
-  echo "===> installing rvm..."
-  gpg --keyserver keyserver.ubuntu.com --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
-  \curl -sSL https://get.rvm.io | bash -s stable --ruby
-fi
 export PATH="/usr/local/opt/ruby/bin:$PATH"
 export PATH="$PATH:$HOME/.rvm/bin"
 
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 
 # shell config
 export PATH=$PATH:$HOME/bin
