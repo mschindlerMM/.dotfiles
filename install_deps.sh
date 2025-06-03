@@ -80,21 +80,15 @@ if ! command -v asdf >/dev/null 2>&1; then
 fi
 
 # ---------------------------
-# RVM
+# Ruby via ASDF
 # ---------------------------
-RVM_SCRIPT="$HOME/.rvm/scripts/rvm"
-if [ -s "$RVM_SCRIPT" ]; then
-  source "$RVM_SCRIPT"
+if ! asdf plugin-list | grep -q "ruby"; then
+  log "Adding Ruby plugin to ASDF..."
+  asdf plugin-add ruby https://github.com/asdf-vm/asdf-ruby.git
 fi
 
-if ! command -v rvm >/dev/null 2>&1; then
-  log "Installing RVM..."
-  gpg --keyserver keyserver.ubuntu.com --recv-keys \
-    409B6B1796C275462A1703113804BB82D39DC0E3 \
-    7D2BAF1CF37B13E2069D6956105BD0E739499BDB \
-    || warn "GPG key fetch failed, but trying to proceed."
-
-  \curl -sSL https://get.rvm.io | bash -s stable --ruby
-
-  source "$RVM_SCRIPT"
+if ! asdf list ruby >/dev/null 2>&1; then
+  log "Installing Ruby 3.2.2 via ASDF..."
+  asdf install ruby 3.2.2
+  asdf global ruby 3.2.2
 fi
