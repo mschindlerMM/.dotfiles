@@ -35,9 +35,6 @@ eval "$(thefuck --alias)"
 . "$HOME/.asdf/completions/asdf.bash"
 
 export PATH="/usr/local/opt/ruby/bin:$PATH"
-export PATH="$PATH:$HOME/.rvm/bin"
-
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 
 # shell config
 export PATH=$PATH:$HOME/bin
@@ -72,6 +69,22 @@ function stopd() {
   docker stop $(docker ps -aq -f name=$1)
 }
 
+sync_directory() {
+  local remote_path="${1:-/home/martinschindler/Documents/dev/mercury/webapp/tmp/capybara}"
+  local local_dest="${2:-$(dirname "$remote_path")}"
+  local remote_host="martinschindler@192.168.2.33"
+
+  echo "Watching remote directory: $remote_host:$remote_path"
+  echo "Syncing to local directory: $local_dest"
+
+  ssh "$remote_host" "while inotifywait -r -e modify,create,delete \"$remote_path\"; do echo 'Change detected on remote.'; done" |
+  while read -r _; do
+    echo "Syncing from remote..."
+    rsync -avz -e ssh "$remote_host:$remote_path" "$local_dest"
+  done
+}
+
+
 # -------
 # Aliases
 # -------
@@ -82,8 +95,8 @@ alias ns='npm start'
 alias nr='npm run'
 alias run='npm run'
 alias runp='npm --prefix assets run'
-alias l="ls"      # List files in current directory
-alias ll="ls -al" # List all files in current directory in long list format
+alias l="ls"
+alias ll="ls -al"
 alias ads='cd ~/Documents/dev/ad_schedule'
 alias tests="script/tests"
 alias merc='cd ~/Documents/dev/mercury/webapp'
@@ -92,9 +105,8 @@ alias plan='cd ~/Documents/dev/plan_item_form'
 alias s='rm -rf tmp/pids && script/start'
 alias ref='cd ~/Documents/dev/reference_data/'
 alias stp='script/setup'
-alias dclearimg="docker rmi $(docker images | grep '^<none>' | awk '{print $3}')"
+alias drmi="docker rmi $(docker images | grep '^<none>' | awk '{print $3}')"
 alias gbl="git branch --sort=-committerdate"
-alias vpnmerc="sudo openvpn ~/Documents/dev/mercury.conf"
 
 # ----------------------
 # Git Aliases
